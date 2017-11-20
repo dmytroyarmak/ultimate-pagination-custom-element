@@ -1,4 +1,4 @@
-import { getPaginationModel } from 'ultimate-pagination';
+import { getPaginationModel, ITEM_TYPES } from 'ultimate-pagination';
 
 class UltimatePagination extends HTMLElement   {
   get currentPage() {
@@ -41,10 +41,63 @@ class UltimatePagination extends HTMLElement   {
   }
 
   render() {
-    this.innerHTML = `
-      <pre>Current page: ${this.currentPage}</pre>
-      <pre>Total pages: ${this.totalPages}</pre>
-    `;
+    const items = getPaginationModel({
+      currentPage: this.currentPage,
+      totalPages: this.totalPages
+    });
+
+    this.innerHTML = '';
+    items
+      .map((item) => this.createItemElement(item))
+      .forEach((itemElement) => this.appendChild(itemElement));
+  }
+
+  createItemElement(item) {
+    switch(item.type) {
+      case ITEM_TYPES.PAGE: return this.createPageElement(item);
+      case ITEM_TYPES.ELLIPSIS: return this.createEllipsisElement(item);
+      case ITEM_TYPES.FIRST_PAGE_LINK: return this.createFirstPageLintElement(item);
+      case ITEM_TYPES.PREVIOUS_PAGE_LINK: return this.createPreviousPageLinkElement(item);
+      case ITEM_TYPES.NEXT_PAGE_LINK: return this.createNextPageLinkElement(item);
+      case ITEM_TYPES.LAST_PAGE_LINK: return this.createLastPageLinkElement(item);
+      default: throw new Error('Unknown item type');
+    }
+  }
+
+  createPageElement(item) {
+    return this.createButtonElement(item, { boldOnActive: true });
+  }
+
+  createEllipsisElement(item) {
+    return this.createButtonElement(item, { text: '...' });
+  }
+
+  createFirstPageLintElement(item) {
+    return this.createButtonElement(item, { text: 'First' });
+  }
+
+  createPreviousPageLinkElement(item) {
+    return this.createButtonElement(item, { text: 'Prev' });
+  }
+
+  createNextPageLinkElement(item) {
+    return this.createButtonElement(item, { text: 'Next' });
+  }
+
+  createLastPageLinkElement(item) {
+    return this.createButtonElement(item, { text: 'Last' });
+  }
+
+  createButtonElement(item, { text = item.value, boldOnActive = false} = {}) {
+    const itemElement = document.createElement('button');
+    itemElement.textContent = text;
+    if (item.isActive && boldOnActive) {
+      itemElement.style.fontWeight = 'bold';
+    }
+    if (!item.isActive) {
+      itemElement.addEventListener('click', () => this.currentPage = item.value);
+    }
+    return itemElement;
   }
 }
 
