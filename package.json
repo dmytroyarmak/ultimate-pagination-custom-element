@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/dmytroyarmak/ultimate-pagination-custom-element#readme",
   "dependencies": {
+    "lit-html": "^0.7.1",
     "ultimate-pagination": "^1.0.0"
   },
   "devDependencies": {

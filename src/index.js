@@ -1,4 +1,13 @@
+import { html, render } from 'lit-html/lib/lit-extended';
 import { getPaginationModel, ITEM_TYPES } from 'ultimate-pagination';
+
+const itemTypeToButtonTextMap = {
+  [ITEM_TYPES.ELLIPSIS]: '...',
+  [ITEM_TYPES.FIRST_PAGE_LINK]: 'First',
+  [ITEM_TYPES.PREVIOUS_PAGE_LINK]: 'Prev',
+  [ITEM_TYPES.NEXT_PAGE_LINK]: 'Next',
+  [ITEM_TYPES.LAST_PAGE_LINK]: 'Last',
+};
 
 class UltimatePagination extends HTMLElement   {
   get currentPage() {
@@ -46,58 +55,31 @@ class UltimatePagination extends HTMLElement   {
       totalPages: this.totalPages
     });
 
-    this.innerHTML = '';
-    items
-      .map((item) => this.createItemElement(item))
-      .forEach((itemElement) => this.appendChild(itemElement));
+    render(html`
+      <div>
+        ${items.map((item) => this.renderItem(item))}
+      </div>
+    `, this);
   }
 
-  createItemElement(item) {
-    switch(item.type) {
-      case ITEM_TYPES.PAGE: return this.createPageElement(item);
-      case ITEM_TYPES.ELLIPSIS: return this.createEllipsisElement(item);
-      case ITEM_TYPES.FIRST_PAGE_LINK: return this.createFirstPageLintElement(item);
-      case ITEM_TYPES.PREVIOUS_PAGE_LINK: return this.createPreviousPageLinkElement(item);
-      case ITEM_TYPES.NEXT_PAGE_LINK: return this.createNextPageLinkElement(item);
-      case ITEM_TYPES.LAST_PAGE_LINK: return this.createLastPageLinkElement(item);
-      default: throw new Error('Unknown item type');
-    }
+  renderItem(item) {
+    const isBold = item.type === ITEM_TYPES.PAGE && item.isActive;
+    return html`
+      <button
+        style$="font-size: ${10}px; ${ isBold ? 'font-weight: bold' : '' }"
+        on-click=${()=> this.onClickButton(item)}
+      >${this.getButtonText(item)}</button>
+    `;
   }
 
-  createPageElement(item) {
-    return this.createButtonElement(item, { boldOnActive: true });
-  }
-
-  createEllipsisElement(item) {
-    return this.createButtonElement(item, { text: '...' });
-  }
-
-  createFirstPageLintElement(item) {
-    return this.createButtonElement(item, { text: 'First' });
-  }
-
-  createPreviousPageLinkElement(item) {
-    return this.createButtonElement(item, { text: 'Prev' });
-  }
-
-  createNextPageLinkElement(item) {
-    return this.createButtonElement(item, { text: 'Next' });
-  }
-
-  createLastPageLinkElement(item) {
-    return this.createButtonElement(item, { text: 'Last' });
-  }
-
-  createButtonElement(item, { text = item.value, boldOnActive = false} = {}) {
-    const itemElement = document.createElement('button');
-    itemElement.textContent = text;
-    if (item.isActive && boldOnActive) {
-      itemElement.style.fontWeight = 'bold';
-    }
+  onClickButton(item) {
     if (!item.isActive) {
-      itemElement.addEventListener('click', () => this.currentPage = item.value);
+      this.currentPage = item.value;
     }
-    return itemElement;
+  }
+
+  getButtonText(item) {
+    return itemTypeToButtonTextMap[item.type] || item.value;
   }
 }
 
