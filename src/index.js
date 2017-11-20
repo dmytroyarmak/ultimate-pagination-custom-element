@@ -1,4 +1,4 @@
-// import { getPaginationModel } from 'ultimate-pagination';
+import { getPaginationModel } from 'ultimate-pagination';
 
 class UltimatePagination extends HTMLElement   {
   get currentPage() {

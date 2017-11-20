@@ -1,0 +1,27 @@
+{
+  "name": "ultimate-pagination-custom-element",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "webpack",
+    "start": "webpack-dev-server --open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dmytroyarmak/ultimate-pagination-custom-element.git"
+  },
+  "author": "Dmytro Yarmak",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dmytroyarmak/ultimate-pagination-custom-element/issues"
+  },
+  "homepage": "https://github.com/dmytroyarmak/ultimate-pagination-custom-element#readme",
+  "dependencies": {
+    "ultimate-pagination": "^1.0.0"
+  },
+  "devDependencies": {
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.4"
+  }
+}
